@@ -1,24 +1,18 @@
-BOLT Steuerung als App (PWA) - Kurzanleitung
-=============================================
+BOLT Steuerung – Version 2 (mit 11 Welten)
 
-1. ORDNER INS INTERNET STELLEN (HTTPS noetig, sonst geht kein Bluetooth)
-   Alle Dateien aus diesem Ordner zusammen hochladen, z. B.
-   - Vercel: Ordner per Drag & Drop auf vercel.com/new ziehen, oder
-   - GitHub Pages, oder
-   - eigener Server (z. B. Netcup) mit HTTPS.
-   Wichtig: index.html, manifest.json, sw.js und alle Icons muessen im
-   gleichen Ordner liegen.
+NEU: Im Tab "Welten" kannst du zwischen 11 Designs wechseln
+(Original, Weltraum, Unterwasser, Dschungel, Bonbon, Arcade, Regenbogen,
+Nacht-Eule, Piraten, Dino, Winter). Die Wahl wird gespeichert.
 
-2. AUF DEM HANDY INSTALLIEREN
-   Adresse in Chrome (Android) oeffnen, einmal warten (Internet noetig),
-   dann Menue (3 Punkte) -> "App installieren" / "Zum Startbildschirm".
+UPDATE auf GitHub:
+1. Im Repository auf "Add file" > "Upload files".
+2. ALLE Dateien und den Ordner "fonts" aus diesem Ordner hineinziehen
+   (index.html, themes.js, fonts.css, sw.js, manifest.json, Icons, fonts).
+   Die alten Dateien werden ersetzt. LIESMICH.txt muss nicht hochgeladen werden.
+3. "Commit changes" und 1-2 Minuten warten.
+4. App auf dem Handy 2x neu laden bzw. schliessen und neu oeffnen,
+   dann ist die neue Version da. Das Icon wird ggf. erst nach
+   Neu-Installation der App neu angezeigt.
 
-3. OFFLINE
-   Nach der ersten Nutzung startet die App auch ohne Internet.
-   Bluetooth zum BOLT braucht ohnehin kein Internet.
-
-4. UPDATES
-   Wenn du Dateien aenderst: in sw.js die Zahl bei CACHE hochzaehlen
-   (bolt-v1 -> bolt-v2) und neu hochladen.
-
-Die Dateinamen in diesem Ordner muessen genau so bleiben (technisch noetig).
+Spaetere Aenderungen: In sw.js die Zeile  const CACHE = 'bolt-v2';
+auf 'bolt-v3' usw. hochzaehlen, damit Handys die neuen Dateien holen.

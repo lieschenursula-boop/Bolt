@@ -1,8 +1,11 @@
 /* BOLT Steuerung – Service Worker (Offline-Cache)
-   Neue Dateien/Icons? Dann CACHE hochzählen (v1 -> v2). */
-const CACHE = 'bolt-v1';
-const FILES = ['./', 'index.html', 'manifest.json', 'icon.svg',
-               'icon-192.png', 'icon-512.png', 'icon-512-maskable.png'];
+   Neue Dateien/Icons? Dann CACHE hochzählen (v2 -> v3). */
+const CACHE = 'bolt-v2';
+const FILES = ['./', 'index.html', 'themes.js', 'fonts.css', 'manifest.json', 'icon.svg',
+               'icon-192.png', 'icon-512.png', 'icon-512-maskable.png',
+               'fonts/nunito-latin-wght-normal.woff2', 'fonts/fredoka-latin-wght-normal.woff2',
+               'fonts/baloo-2-latin-wght-normal.woff2', 'fonts/quicksand-latin-wght-normal.woff2',
+               'fonts/press-start-2p-latin-400-normal.woff2'];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));

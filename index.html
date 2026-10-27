@@ -9,124 +9,119 @@
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icon-192.png">
+<link rel="stylesheet" href="fonts.css">
 <style>
-:root{
-  --navy:#0b3b6b;--blue:#1e88e5;--sky:#c4f1ff;--mint:#c9f8e6;
-  --teal:#2ec4b6;--green:#5be3b0;--green-d:#0f8a63;--panel:rgba(255,255,255,.88);--bad:#a40e26;
-}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;color:var(--navy);font:16px/1.45 "Avenir Next","Nunito","Segoe UI",Roboto,system-ui,sans-serif;min-height:100vh;
-  background:linear-gradient(165deg,var(--sky),var(--mint));
+body{margin:0;background:#c9f8e6;background:var(--bg);background-attachment:fixed;color:var(--text);font:16px/1.45 var(--font-ui);min-height:100vh;
   padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}
-/* Seifenblasen im Hintergrund */
-body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-  background:
-   radial-gradient(circle at 10% 6%,rgba(255,255,255,.75) 0 34px,transparent 35px),
-   radial-gradient(circle at 94% 16%,rgba(255,255,255,.5) 0 58px,transparent 59px),
-   radial-gradient(circle at 4% 62%,rgba(46,196,182,.22) 0 84px,transparent 85px),
-   radial-gradient(circle at 98% 74%,rgba(30,136,229,.18) 0 70px,transparent 71px),
-   radial-gradient(circle at 62% 98%,rgba(91,227,176,.3) 0 90px,transparent 91px)}
+#decor{position:fixed;top:0;bottom:0;left:50%;width:min(100vw,440px);transform:translateX(-50%);overflow:hidden;pointer-events:none;z-index:-1}
 main{max-width:440px;margin:0 auto;padding:16px}
 header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}
-.logo{width:56px;height:56px;flex:none;filter:drop-shadow(0 4px 0 rgba(15,107,181,.25));animation:bob 3s ease-in-out infinite}
+.logo{width:56px;height:56px;flex:none;overflow:visible;filter:drop-shadow(0 4px 0 rgba(0,0,0,.18));animation:bob 3s ease-in-out infinite}
 @keyframes bob{50%{transform:translateY(-4px)}}
-h1{font-size:21px;line-height:1.1;margin:0;letter-spacing:-.01em;font-weight:800}
+h1{font:var(--headw) var(--h1)/var(--h1lh) var(--font-head);margin:0;letter-spacing:-.01em}
 
-button{font:inherit;font-weight:700;color:var(--navy);background:#fff;border:3px solid var(--blue);border-radius:999px;
-  padding:9px 18px;min-height:48px;cursor:pointer;box-shadow:0 4px 0 rgba(15,107,181,.35);transition:transform .08s,box-shadow .08s}
-button:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(15,107,181,.35)}
-button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--navy);outline-offset:3px}
-#dial:focus,#dial:focus-visible{outline:none}
-#dial:focus-visible #dKnob circle:first-child{stroke:var(--navy);stroke-width:7}
-button.pri{background:var(--green);border-color:var(--green-d);box-shadow:0 4px 0 var(--green-d)}
-button.pri:active{box-shadow:0 1px 0 var(--green-d)}
+button{font:inherit;font-weight:800;color:var(--sectext);background:var(--secbg);border:3px solid var(--secborder);border-radius:var(--pr);
+  padding:9px 18px;min-height:48px;cursor:pointer;box-shadow:var(--secshadow);transition:transform .08s}
+button:active{transform:translateY(3px)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--text);outline-offset:3px}
+button.pri,nav button[aria-selected="true"]{background:var(--pribg);color:var(--pritext);border-color:var(--priborder);box-shadow:var(--prishadow)}
 button.round{width:48px;padding:0;font-size:24px;line-height:1}
 
-#st{background:var(--panel);border:3px solid #fff;border-radius:22px;padding:8px 14px;color:var(--navy);font-size:14px;margin:0 0 12px;min-height:2.4em}
-#st.err{background:#ffe3e6;color:var(--bad);border-color:#ffc2c9}
+#st{background:var(--pill);border:3px solid var(--pillb);border-radius:22px;padding:6px 16px;color:var(--text);font-size:14px;font-weight:600;margin:0 0 12px;min-height:2.4em}
+#st.err{background:#ffe3e6;color:#a40e26;border-color:#ffc2c9}
 
-nav{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-nav button[aria-selected="true"]{background:var(--green);border-color:var(--green-d);box-shadow:0 4px 0 var(--green-d)}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+nav button{padding:8px 4px;min-height:44px;font-family:var(--font-head);font-weight:var(--headw);font-size:var(--tabsize)}
 section[hidden]{display:none}
 
 /* Joystick */
-#pad{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:8px auto 14px;border-radius:50%;
-  background:radial-gradient(circle closest-side,#fff 0 25%,#d4f7ff 25% 50%,#b8f2dc 50% 75%,#9fe6f8 75% 100%);
-  border:6px solid #fff;box-shadow:0 8px 0 rgba(15,107,181,.25);touch-action:none;user-select:none}
-#knob{position:absolute;width:34%;aspect-ratio:1;left:33%;top:33%;filter:drop-shadow(0 6px 0 rgba(15,107,181,.3));pointer-events:none}
+#pad{position:relative;width:min(78vw,300px);aspect-ratio:1;margin:8px auto 14px;border-radius:50%;background:var(--padbg);
+  border:6px solid var(--padborder);box-shadow:var(--padshadow);touch-action:none;user-select:none}
+#pad::before{content:"";position:absolute;inset:14%;border-radius:50%;border:3px dashed var(--padring)}
+#knob{position:absolute;width:34%;aspect-ratio:1;left:33%;top:33%;filter:drop-shadow(0 6px 0 rgba(0,0,0,.25));pointer-events:none}
 #knob.snap{transition:left .15s,top .15s}
-#knob svg,.logo,#dial svg{overflow:visible}
-#knob svg{width:100%;height:100%;display:block}
+#knobSvg{width:100%;height:100%;display:block;overflow:visible}
 .read{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
-.bubble{background:var(--panel);border:3px solid #fff;border-radius:999px;padding:6px 16px;font-size:15px}
-.bubble b{font-variant-numeric:tabular-nums;font-size:18px}
+.bubble{background:var(--pill);border:3px solid var(--pillb);border-radius:var(--pr);padding:6px 16px;font:600 var(--bubsize)/1.4 var(--font-head)}
+.bubble b{font-variant-numeric:tabular-nums;font-size:var(--bubnum)}
 
-label{display:block;font-size:15px;margin:12px 0 6px;font-weight:700}
-input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:30px;background:transparent;margin:0}
-input[type=range]::-webkit-slider-runnable-track{height:16px;border-radius:999px;background:linear-gradient(90deg,#9fe6f8,var(--green));border:3px solid #fff}
-input[type=range]::-moz-range-track{height:10px;border-radius:999px;background:linear-gradient(90deg,#9fe6f8,var(--green));border:3px solid #fff}
-input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-9px;border-radius:50%;background:#fff;border:5px solid var(--teal);box-shadow:0 3px 0 rgba(15,107,181,.3)}
-input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff;border:5px solid var(--teal)}
+.slider{display:flex;align-items:center;gap:12px;padding:4px 14px;border-radius:var(--pr);background:var(--sliderbg)}
+.slider label{font-size:14px;font-weight:700;white-space:nowrap}
+input[type=range]{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:30px;background:transparent;margin:0}
+input[type=range]::-webkit-slider-runnable-track{height:16px;border-radius:999px;background:var(--track);border:3px solid var(--trackborder)}
+input[type=range]::-moz-range-track{height:10px;border-radius:999px;background:var(--track);border:3px solid var(--trackborder)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:30px;height:30px;margin-top:-9px;border-radius:50%;background:var(--thumbbg);border:5px solid var(--thumbborder);box-shadow:0 3px 0 rgba(0,0,0,.2)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:var(--thumbbg);border:5px solid var(--thumbborder)}
 
 .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;align-items:center}
 .row.mid{justify-content:center}
 
-details{margin-top:16px;background:var(--panel);border:3px solid #fff;border-radius:28px;padding:6px 14px 16px}
-summary{cursor:pointer;font-weight:800;font-size:18px;padding:10px 0;list-style:none;display:flex;align-items:center;gap:10px}
+details{margin-top:16px;background:var(--panel);border:3px solid var(--pborder);border-radius:28px;padding:6px 14px 16px}
+summary{cursor:pointer;font:var(--headw) 18px var(--font-head);padding:10px 0;list-style:none;display:flex;align-items:center;gap:10px}
 summary::-webkit-details-marker{display:none}
-summary::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--green);border:3px solid var(--green-d);flex:none}
-details[open] summary::before{background:var(--blue);border-color:var(--navy)}
+summary::before{content:"";width:22px;height:22px;border-radius:50%;background:var(--dot);border:3px solid var(--dotborder);flex:none}
 .hint{margin:0 0 4px;font-size:14px}
 
 /* Halbkreis-Regler */
-#dial{display:block;width:100%;max-width:340px;margin:0 auto;touch-action:none;user-select:none;cursor:pointer}
-#dial text{font-weight:800;font-size:26px;fill:var(--navy);font-family:inherit}
+#dial{display:block;width:100%;max-width:340px;margin:0 auto;touch-action:none;user-select:none;cursor:pointer;overflow:visible}
+#dial:focus,#dial:focus-visible{outline:none}
+#dial:focus-visible .d-knob circle:first-child{stroke-width:7}
+.d-outer{stroke:var(--dialouter)}.d-inner{stroke:var(--dialinner)}.d-fill{stroke:var(--dialfill)}
+.d-knob circle:first-child{fill:var(--knobfill);stroke:var(--knobstroke)}
+#dTxt{fill:var(--dialtext);font:var(--headw) var(--dialsize) var(--font-head)}
 
 /* Display */
 #shell{width:min(88vw,380px);aspect-ratio:1;margin:6px auto 12px;border-radius:50%;display:grid;place-items:center;
-  background:radial-gradient(circle at 35% 28%,#f0fdff,#8fdcf7 55%,#2f9fe3);border:6px solid #fff;box-shadow:0 8px 0 rgba(15,107,181,.25)}
-#grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;width:66%;aspect-ratio:1;touch-action:none;user-select:none;background:var(--navy);padding:8px;border-radius:26px}
-#grid div{border-radius:50%;background:#12406f}
+  background:var(--shell);border:6px solid var(--padborder);box-shadow:var(--padshadow)}
+#grid{display:grid;grid-template-columns:repeat(8,1fr);gap:4px;width:66%;aspect-ratio:1;touch-action:none;user-select:none;background:var(--ledpanel);padding:8px;border-radius:26px}
+#grid div{border-radius:50%;background:var(--ledoff)}
 #sw{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
-#sw button{width:36px;height:36px;min-height:0;padding:0;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 0 rgba(15,107,181,.35)}
-#sw button.on{outline:3px solid var(--navy);outline-offset:2px}
-#col{width:52px;height:52px;padding:0;border:3px solid var(--blue);border-radius:50%;background:none;cursor:pointer;overflow:hidden}
+#sw button{width:36px;height:36px;min-height:0;padding:0;border-radius:50%;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+#sw button.on{outline:3px solid var(--text);outline-offset:2px}
+#col{width:52px;height:52px;padding:0;border:3px solid var(--secborder);border-radius:50%;background:none;cursor:pointer;overflow:hidden}
 #col::-webkit-color-swatch-wrapper{padding:0}
 #col::-webkit-color-swatch{border:none;border-radius:50%}
 #col::-moz-color-swatch{border:none;border-radius:50%}
 .note{font-size:14px;text-align:center;margin:12px 0 0}
+
+/* Welten */
+#tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin-top:8px}
+button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px;
+  font:700 14px/1.2 var(--font-ui);color:var(--text);border-radius:20px}
+.tchip .pv{width:92px;height:92px;border-radius:50%;border:4px solid var(--pborder);display:grid;place-items:center;box-shadow:0 4px 0 rgba(0,0,0,.18)}
+.tchip .pv svg{width:62px;height:62px;overflow:visible}
+.tchip[aria-pressed="true"] .pv{outline:4px solid var(--text);outline-offset:3px}
+.tchip[aria-pressed="true"] span:last-child{text-decoration:underline;text-underline-offset:3px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 </head>
 <body>
-<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-  <defs><radialGradient id="bb" cx="35%" cy="28%" r="80%"><stop offset="0" stop-color="#f0fdff"/><stop offset=".5" stop-color="#8fdcf7"/><stop offset="1" stop-color="#2f9fe3"/></radialGradient><g id="ball"><circle cx="60" cy="60" r="54" fill="url(#bb)" stroke="#0f6bb5" stroke-width="3"/><circle cx="60" cy="60" r="47" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="2"/><rect x="32" y="32" width="56" height="56" rx="16" fill="#0b3b6b" stroke="#0a2f57" stroke-width="2"/><circle cx="37.25" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="50.25" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="56.75" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="76.25" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="82.75" cy="37.25" r="2.4" fill="#1f5f99"/><circle cx="37.25" cy="43.75" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="43.75" r="2.4" fill="#7dffc4"/><circle cx="50.25" cy="43.75" r="2.4" fill="#7dffc4"/><circle cx="56.75" cy="43.75" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="43.75" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="43.75" r="2.4" fill="#7dffc4"/><circle cx="76.25" cy="43.75" r="2.4" fill="#7dffc4"/><circle cx="82.75" cy="43.75" r="2.4" fill="#1f5f99"/><circle cx="37.25" cy="50.25" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="50.25" r="2.4" fill="#7dffc4"/><circle cx="50.25" cy="50.25" r="2.4" fill="#7dffc4"/><circle cx="56.75" cy="50.25" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="50.25" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="50.25" r="2.4" fill="#7dffc4"/><circle cx="76.25" cy="50.25" r="2.4" fill="#7dffc4"/><circle cx="82.75" cy="50.25" r="2.4" fill="#1f5f99"/><circle cx="37.25" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="50.25" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="56.75" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="76.25" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="82.75" cy="56.75" r="2.4" fill="#1f5f99"/><circle cx="37.25" cy="63.25" r="2.4" fill="#ffe066"/><circle cx="43.75" cy="63.25" r="2.4" fill="#1f5f99"/><circle cx="50.25" cy="63.25" r="2.4" fill="#1f5f99"/><circle cx="56.75" cy="63.25" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="63.25" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="63.25" r="2.4" fill="#1f5f99"/><circle cx="76.25" cy="63.25" r="2.4" fill="#1f5f99"/><circle cx="82.75" cy="63.25" r="2.4" fill="#ffe066"/><circle cx="37.25" cy="69.75" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="69.75" r="2.4" fill="#ffe066"/><circle cx="50.25" cy="69.75" r="2.4" fill="#1f5f99"/><circle cx="56.75" cy="69.75" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="69.75" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="69.75" r="2.4" fill="#1f5f99"/><circle cx="76.25" cy="69.75" r="2.4" fill="#ffe066"/><circle cx="82.75" cy="69.75" r="2.4" fill="#1f5f99"/><circle cx="37.25" cy="76.25" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="76.25" r="2.4" fill="#1f5f99"/><circle cx="50.25" cy="76.25" r="2.4" fill="#ffe066"/><circle cx="56.75" cy="76.25" r="2.4" fill="#ffe066"/><circle cx="63.25" cy="76.25" r="2.4" fill="#ffe066"/><circle cx="69.75" cy="76.25" r="2.4" fill="#ffe066"/><circle cx="76.25" cy="76.25" r="2.4" fill="#1f5f99"/><circle cx="82.75" cy="76.25" r="2.4" fill="#1f5f99"/><circle cx="37.25" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="43.75" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="50.25" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="56.75" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="63.25" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="69.75" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="76.25" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="82.75" cy="82.75" r="2.4" fill="#1f5f99"/><circle cx="23" cy="74" r="5.5" fill="#ff9ec0" fill-opacity=".8"/><circle cx="97" cy="74" r="5.5" fill="#ff9ec0" fill-opacity=".8"/><circle cx="60" cy="102" r="4.5" fill="#2f7bff" stroke="#fff" stroke-width="1.5"/><ellipse cx="34" cy="23" rx="14" ry="6.5" transform="rotate(-35 34 23)" fill="#fff" fill-opacity=".65"/></g></defs>
-</svg>
+<div id="decor" aria-hidden="true"></div>
 <main>
 <header>
-  <div class="brand"><svg class="logo" viewBox="0 0 120 120" aria-hidden="true"><use href="#ball"/></svg><h1>BOLT<br>Steuerung</h1></div>
+  <div class="brand"><svg id="logo" class="logo" viewBox="0 0 120 120" aria-hidden="true"></svg><h1>BOLT<br>Steuerung</h1></div>
   <button id="conn" class="pri">Verbinden</button>
 </header>
 <p id="st" role="status">Noch nicht verbunden. BOLT schütteln oder laden, dann auf „Verbinden“ tippen.</p>
-<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button></nav>
+<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button><button role="tab" aria-selected="false" data-t="themes">Welten</button></nav>
 
 <section id="drive">
-  <div id="pad"><div id="knob" class="snap"><svg viewBox="0 0 120 120" aria-hidden="true"><use href="#ball"/></svg></div></div>
+  <div id="pad"><div id="knob" class="snap"><svg id="knobSvg" viewBox="0 0 120 120" aria-hidden="true"></svg></div></div>
   <div class="read"><span class="bubble">Tempo <b id="rs">0</b> %</span><span class="bubble">Richtung <b id="rh">0</b>°</span></div>
-  <label for="mx">Höchsttempo: <span id="mxv">150</span></label>
-  <input id="mx" type="range" min="40" max="255" value="150">
+  <div class="slider"><label for="mx">Höchsttempo: <span id="mxv">150</span></label><input id="mx" type="range" min="40" max="255" value="150"></div>
   <details>
     <summary>Ausrichten</summary>
     <p class="hint">Drehe, bis der blaue Punkt zu dir zeigt. Zeigt der Pfeil nicht vom Handy weg, tippe auf „Pfeil drehen“.</p>
-    <svg id="dial" viewBox="0 0 240 160" role="slider" tabindex="0" aria-label="Ausrichtung" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0">
-      <path d="M 20 120 A 100 100 0 0 1 220 120" fill="none" stroke="#fff" stroke-width="26" stroke-linecap="round"/>
-      <path d="M 20 120 A 100 100 0 0 1 220 120" fill="none" stroke="#9fe6f8" stroke-width="16" stroke-linecap="round"/>
-      <path id="dFill" d="M 20 120 A 100 100 0 0 1 220 120" pathLength="1" fill="none" stroke="#2ec4b6" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 2"/>
-      <use id="dBall" href="#ball" transform="translate(88 54) scale(.5333)"/>
-      <g id="dKnob" transform="translate(20 120)"><circle r="19" fill="#fff" stroke="#0f8a63" stroke-width="5"/><circle r="7" fill="#2f7bff"/></g>
-      <text id="dTxt" x="120" y="152" text-anchor="middle">0°</text>
+    <svg id="dial" viewBox="0 0 240 146" role="slider" tabindex="0" aria-label="Ausrichtung" aria-valuemin="0" aria-valuemax="359" aria-valuenow="0">
+      <path class="d-outer" d="M 30 120 A 90 90 0 0 1 210 120" fill="none" stroke-width="26" stroke-linecap="round"/>
+      <path class="d-inner" d="M 30 120 A 90 90 0 0 1 210 120" fill="none" stroke-width="16" stroke-linecap="round"/>
+      <path class="d-fill" id="dFill" d="M 30 120 A 90 90 0 0 1 210 120" pathLength="1" fill="none" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 2"/>
+      <g id="dBall" transform="translate(88 54) scale(.5333)"></g>
+      <g class="d-knob" id="dKnob" transform="translate(30 120)"><circle r="17" stroke-width="5"/><circle r="6" fill="#2f7bff"/></g>
+      <text id="dTxt" x="120" y="142" text-anchor="middle">0°</text>
     </svg>
     <div class="row mid"><button id="aimM" class="round" aria-label="ein bisschen nach links drehen">−</button><button id="aimP" class="round" aria-label="ein bisschen nach rechts drehen">+</button></div>
     <div class="row mid"><button id="aimOn">Los geht’s</button><button id="aimOff" class="pri">Fertig</button><button class="rot">Pfeil drehen</button></div>
@@ -141,8 +136,14 @@ details[open] summary::before{background:var(--blue);border-color:var(--navy)}
   <input id="file" type="file" accept="image/*" hidden>
   <p class="note">Das Bild bleibt beim Fahren erhalten.</p>
 </section>
+
+<section id="themes" hidden>
+  <p class="note" style="margin-top:0;font-weight:700">Wähle deine Welt!</p>
+  <div id="tgrid"></div>
+</section>
 </main>
 
+<script src="themes.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 const U=n=>`${n}-574f-4f20-5370-6865726f2121`;
@@ -216,8 +217,29 @@ $('#conn').onclick=()=>{if(chr&&dev){dev.gatt.disconnect()}else connect()};
 /* Tabs */
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
-  $('#drive').hidden=b.dataset.t!=='drive';$('#disp').hidden=b.dataset.t!=='disp';
+  for(const id of ['drive','disp','themes'])$('#'+id).hidden=b.dataset.t!==id;
 });
+
+/* Welten (Themes) */
+let themeId='std';
+function applyTheme(id){
+  const t=THEMES.find(x=>x.id===id)||THEMES[0];
+  themeId=t.id;
+  const r=document.documentElement.style;
+  for(const k in t.vars)r.setProperty(k,t.vars[k]);
+  $('#decor').innerHTML=t.decor;
+  for(const sel of ['#logo','#knobSvg','#dBall'])$(sel).innerHTML=t.ball;
+  $('meta[name=theme-color]').content=t.bar;
+  document.querySelectorAll('.tchip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===t.id));
+  try{localStorage.setItem('bolt-theme',t.id)}catch(e){}
+}
+for(const t of THEMES){
+  const b=document.createElement('button');
+  b.className='tchip';b.dataset.id=t.id;b.setAttribute('aria-pressed','false');
+  b.innerHTML='<span class="pv" style="background:'+t.vars['--bg']+'"><svg viewBox="-14 -24 148 152" aria-hidden="true">'+t.ball+'</svg></span><span>'+t.name+'</span>';
+  b.onclick=()=>applyTheme(t.id);
+  $('#tgrid').appendChild(b);
+}
 
 /* Joystick: Zugstärke bestimmt das Tempo */
 const pad=$('#pad'),knob=$('#knob');
@@ -249,7 +271,7 @@ pad.addEventListener('pointerup',stop);pad.addEventListener('pointercancel',stop
 const ARROW=['00011000','00111100','01111110','00011000','00011000','00011000','00011000','00000000'];
 const showArrow=()=>sendPixels(ARROW.join('').split('').map(c=>c==='1'?'#ffb02e':'#000000'));
 const aimTo=h=>send(0x12,0x16,0x07,[0,h>>8,h&255,0]);
-const dial=$('#dial'),CX=120,CY=120,RR=100;
+const dial=$('#dial'),CX=120,CY=120,RR=90;
 let aimT=0;
 function drawAim(){
   const th=(off/359*180-90)*Math.PI/180;
@@ -268,7 +290,7 @@ function setAim(v,final){
 function dialVal(e){
   const p=new DOMPoint(e.clientX,e.clientY).matrixTransform(dial.getScreenCTM().inverse());
   const dx=p.x-CX,dy=p.y-CY;
-  if(Math.hypot(dx,dy)<50)return null;
+  if(Math.hypot(dx,dy)<45)return null;
   let th=Math.atan2(dx,-dy)*180/Math.PI;
   if(th>90||th<-90)th=th>0?90:-90;
   return Math.round((th+90)/180*359);
@@ -287,13 +309,12 @@ $('#aimM').onclick=()=>setAim(off-2,true);
 $('#aimP').onclick=()=>setAim(off+2,true);
 $('#aimOn').onclick=()=>{aiming=true;send(0x12,0x16,0x0C,[1]);leds(0x38,0,0,255);aimTo(off);showArrow()};
 $('#aimOff').onclick=()=>{aiming=false;leds(0x38,0,0,0);sendPixels(img)};
-drawAim();
 
 /* Display-Editor */
 const grid=$('#grid'),cells=[];
 let img=Array.from({length:64},()=>'#000000'),cur='#38d996',tm=null;
 try{const s=localStorage.getItem('bolt-img');if(s){const a=JSON.parse(s);if(Array.isArray(a)&&a.length===64)img=a}}catch(e){}
-const shade=c=>c==='#000000'?'#12406f':c;
+const shade=c=>c==='#000000'?'var(--ledoff)':c;
 for(let i=0;i<64;i++){const c=document.createElement('div');c.dataset.i=i;grid.appendChild(c);cells.push(c)}
 const paint=()=>cells.forEach((c,i)=>c.style.background=shade(img[i]));paint();
 const SW=[['#3d8bff','blau'],['#38d996','grün'],['#2ee6f0','türkis'],['#ffffff','weiß'],['#ffb02e','orange'],['#ff4d5e','rot'],['#b46bff','lila'],['#000000','aus']];
@@ -345,6 +366,10 @@ $('#file').onchange=e=>{
   im.src=URL.createObjectURL(f);e.target.value='';
 };
 mark();
+
+/* Start: gespeicherte Welt laden */
+let first='std';try{first=localStorage.getItem('bolt-theme')||'std'}catch(e){}
+applyTheme(first);drawAim();
 
 /* Offline-Fähigkeit: Service Worker */
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
