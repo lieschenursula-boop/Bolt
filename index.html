@@ -33,7 +33,7 @@ button.round{width:48px;padding:0;font-size:24px;line-height:1}
 #st{background:var(--pill);border:3px solid var(--pillb);border-radius:22px;padding:6px 16px;color:var(--text);font-size:14px;font-weight:600;margin:0 0 12px;min-height:2.4em}
 #st.err{background:#ffe3e6;color:#a40e26;border-color:#ffc2c9}
 
-nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
+nav{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
 nav button{padding:8px 4px;min-height:44px;font-family:var(--font-head);font-weight:var(--headw);font-size:var(--tabsize)}
 section[hidden]{display:none}
 
@@ -87,6 +87,18 @@ summary::before{content:"";width:22px;height:22px;border-radius:50%;background:v
 #col::-moz-color-swatch{border:none;border-radius:50%}
 .note{font-size:14px;text-align:center;margin:12px 0 0}
 
+/* Einstellungen */
+.hbtns{display:flex;align-items:center;gap:8px}
+#gear{width:48px;height:48px;min-height:0;padding:0;border-radius:50%;display:grid;place-items:center}
+#gear svg{width:26px;height:26px}
+dialog#settings{width:min(92vw,420px);max-height:86vh;overflow:auto;padding:16px 16px 20px;border:4px solid var(--pborder);border-radius:28px;
+  background:var(--bg);background-attachment:scroll;color:var(--text);font-family:var(--font-ui);box-shadow:0 12px 40px rgba(0,0,0,.35)}
+dialog#settings::backdrop{background:rgba(0,0,0,.45)}
+.sethead{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.sethead h2{font:var(--headw) 22px/1.2 var(--font-head);margin:0}
+#setX{width:44px;height:44px;min-height:0;padding:0;border-radius:50%;font-size:18px}
+dialog#settings h3{font:700 15px/1.2 var(--font-ui);margin:10px 0 0;text-align:center}
+
 /* Welten */
 #tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin-top:8px}
 button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -103,10 +115,11 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
 <main>
 <header>
   <div class="brand"><svg id="logo" class="logo" viewBox="0 0 120 120" aria-hidden="true"></svg><h1>BOLT<br>Steuerung</h1></div>
-  <button id="conn" class="pri">Verbinden</button>
+  <div class="hbtns"><button id="gear" aria-label="Einstellungen" aria-haspopup="dialog"><svg viewBox="0 0 24 24" aria-hidden="true"><g fill="currentColor"><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(0 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(45 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(90 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(135 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(180 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(225 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(270 12 12)"/><rect x="10.5" y="1.5" width="3" height="5" rx="1" transform="rotate(315 12 12)"/><path fill-rule="evenodd" d="M12 4.8a7.2 7.2 0 1 0 0 14.4 7.2 7.2 0 0 0 0-14.4Zm0 4.2a3 3 0 1 1 0 6 3 3 0 0 1 0-6Z"/></g></svg></button>
+  <button id="conn" class="pri">Verbinden</button></div>
 </header>
 <p id="st" role="status">Noch nicht verbunden. BOLT schütteln oder laden, dann auf „Verbinden“ tippen.</p>
-<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button><button role="tab" aria-selected="false" data-t="themes">Welten</button></nav>
+<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button></nav>
 
 <section id="drive">
   <div id="pad"><div id="knob" class="snap"><svg id="knobSvg" viewBox="0 0 120 120" aria-hidden="true"></svg></div></div>
@@ -137,11 +150,14 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
   <p class="note">Das Bild bleibt beim Fahren erhalten.</p>
 </section>
 
-<section id="themes" hidden>
-  <p class="note" style="margin-top:0;font-weight:700">Wähle deine Welt!</p>
-  <div id="tgrid"></div>
-</section>
+
 </main>
+
+<dialog id="settings" aria-labelledby="setT">
+  <div class="sethead"><h2 id="setT">Einstellungen</h2><button id="setX" aria-label="Schließen">✕</button></div>
+  <h3>Design wählen</h3>
+  <div id="tgrid"></div>
+</dialog>
 
 <script src="themes.js"></script>
 <script>
@@ -212,12 +228,15 @@ async function connect(){
     sendImage();
   }catch(e){st('Verbindung fehlgeschlagen: '+(e.message||e),1)}
 }
+$('#gear').onclick=()=>$('#settings').showModal();
+$('#setX').onclick=()=>$('#settings').close();
+$('#settings').addEventListener('click',e=>{if(e.target===e.currentTarget)e.currentTarget.close()});
 $('#conn').onclick=()=>{if(chr&&dev){dev.gatt.disconnect()}else connect()};
 
 /* Tabs */
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
-  for(const id of ['drive','disp','themes'])$('#'+id).hidden=b.dataset.t!==id;
+  for(const id of ['drive','disp'])$('#'+id).hidden=b.dataset.t!==id;
 });
 
 /* Welten (Themes) */
