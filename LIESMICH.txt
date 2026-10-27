@@ -1,0 +1,24 @@
+BOLT Steuerung als App (PWA) - Kurzanleitung
+=============================================
+
+1. ORDNER INS INTERNET STELLEN (HTTPS noetig, sonst geht kein Bluetooth)
+   Alle Dateien aus diesem Ordner zusammen hochladen, z. B.
+   - Vercel: Ordner per Drag & Drop auf vercel.com/new ziehen, oder
+   - GitHub Pages, oder
+   - eigener Server (z. B. Netcup) mit HTTPS.
+   Wichtig: index.html, manifest.json, sw.js und alle Icons muessen im
+   gleichen Ordner liegen.
+
+2. AUF DEM HANDY INSTALLIEREN
+   Adresse in Chrome (Android) oeffnen, einmal warten (Internet noetig),
+   dann Menue (3 Punkte) -> "App installieren" / "Zum Startbildschirm".
+
+3. OFFLINE
+   Nach der ersten Nutzung startet die App auch ohne Internet.
+   Bluetooth zum BOLT braucht ohnehin kein Internet.
+
+4. UPDATES
+   Wenn du Dateien aenderst: in sw.js die Zahl bei CACHE hochzaehlen
+   (bolt-v1 -> bolt-v2) und neu hochladen.
+
+Die Dateinamen in diesem Ordner muessen genau so bleiben (technisch noetig).
