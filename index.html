@@ -118,6 +118,10 @@ dialog#settings h3{font:700 15px/1.2 var(--font-ui);margin:10px 0 0;text-align:c
 .chatform input{flex:1;min-width:0;font:700 16px var(--font-ui);padding:8px 14px;border-radius:var(--pr);border:3px solid var(--secborder);background:var(--secbg);color:var(--sectext)}
 .rl{font-size:14px;font-weight:700}
 
+.drvseg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+.drvseg button{min-height:44px;padding:6px 4px;font-size:15px}
+.drvseg button[aria-pressed="true"]{background:var(--pribg);color:var(--pritext);border-color:var(--priborder);box-shadow:var(--prishadow)}
+
 /* Welten */
 #tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin-top:8px}
 button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -202,6 +206,9 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
 
 <dialog id="settings" aria-labelledby="setT">
   <div class="sethead"><h2 id="setT">Einstellungen</h2><button id="setX" aria-label="Schließen">✕</button></div>
+  <h3>Fahrstil</h3>
+  <div class="drvseg" role="group" aria-label="Fahrstil"><button data-m="soft" aria-pressed="true">Sanft</button><button data-m="norm" aria-pressed="false">Normal</button><button data-m="fast" aria-pressed="false">Flott</button></div>
+  <p id="drvTxt" class="note" style="margin-top:6px"></p>
   <h3>Design wählen</h3>
   <div id="tgrid"></div>
 </dialog>
@@ -283,6 +290,7 @@ async function connect(){
     chr=c;off=0;drawAim();
     send(0x11,0x13,0x0D,[]);
     await new Promise(r=>setTimeout(r,400));
+    send(0x12,0x16,0x0C,[1]);
     $('#conn').textContent='Trennen';
     st('Verbunden mit '+dev.name+'.');
     if(typeof irOnConnect==='function')irOnConnect();
@@ -324,7 +332,7 @@ for(const t of THEMES){
 
 /* Joystick: Zugstärke bestimmt das Tempo */
 const pad=$('#pad'),knob=$('#knob');
-let act=false,speed=0,head=0,timer=null;
+let act=false,speed=0,head=0,ticker=null;
 $('#mx').oninput=e=>$('#mxv').textContent=e.target.value;
 function stick(e){
   const r=pad.getBoundingClientRect(),R=r.width/2*0.66;
@@ -338,13 +346,49 @@ function stick(e){
   if(f>=dz)head=Math.round((Math.atan2(dx,-dy)*180/Math.PI+360)%360)%360;
   $('#rs').textContent=Math.round(k*100);$('#rh').textContent=head;
 }
+/* Sanftes Fahren: Tempo und Richtung werden langsam angepasst, damit sich der BOLT nicht überschlägt.
+   a = Beschleunigung, d = Bremsen (je 100 ms), t = max. Drehung je 100 ms, slow = Tempo beim scharfen Wenden, cap = Anteil vom Höchsttempo */
+const DRV={
+  soft:{a:12,d:16,t:20,slow:35,cap:.85,txt:'Ruhig anfahren und bremsen, langsam wenden. Am sichersten.'},
+  norm:{a:25,d:35,t:40,slow:60,cap:1,txt:'Zügig, aber ohne harte Ruckler.'},
+  fast:{a:255,d:255,t:360,slow:255,cap:1,txt:'Sofort volles Tempo. Der BOLT kann sich überschlagen!'}
+};
+let drvMode='soft',curS=0,curH=0;
+try{const m=localStorage.getItem('bolt-drive');if(DRV[m])drvMode=m}catch(e){}
+function drvUi(){
+  document.querySelectorAll('.drvseg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.m===drvMode));
+  $('#drvTxt').textContent=DRV[drvMode].txt;
+}
+document.querySelectorAll('.drvseg button').forEach(b=>b.onclick=()=>{drvMode=b.dataset.m;try{localStorage.setItem('bolt-drive',drvMode)}catch(e){}drvUi()});
+const angDiff=(a,b)=>((a-b+540)%360)-180;
+function tick(){
+  const P=DRV[drvMode];
+  const tgtH=(head+off)%360;
+  let tS=Math.min(255,Math.round(speed*P.cap));
+  const d=angDiff(tgtH,curH);
+  if(curS<8){curH=tgtH}
+  else{
+    if(Math.abs(d)>100)tS=Math.min(tS,P.slow);
+    curH=(curH+Math.max(-P.t,Math.min(P.t,d))+360)%360;
+  }
+  curS=tS>curS?Math.min(tS,curS+P.a):Math.max(tS,curS-P.d);
+  if(!act&&curS<=0){
+    clearInterval(ticker);ticker=null;curS=0;
+    send(0x12,0x16,0x07,[0,curH>>8,curH&255,0]);
+    return;
+  }
+  drive(curS,curH);
+}
 function stop(){
-  act=false;clearInterval(timer);speed=0;
+  act=false;speed=0;
   knob.classList.add('snap');
   knob.style.left=knob.style.top='33%';$('#rs').textContent=0;
-  {const h=(head+off)%360;send(0x12,0x16,0x07,[0,h>>8,h&255,0])}
 }
-pad.addEventListener('pointerdown',e=>{act=true;pad.setPointerCapture(e.pointerId);stick(e);timer=setInterval(()=>drive(speed,(head+off)%360),100)});
+pad.addEventListener('pointerdown',e=>{
+  act=true;pad.setPointerCapture(e.pointerId);stick(e);
+  send(0x12,0x16,0x0C,[1]);
+  if(!ticker){curH=(head+off)%360;ticker=setInterval(tick,100)}
+});
 pad.addEventListener('pointermove',e=>{if(act)stick(e)});
 pad.addEventListener('pointerup',stop);pad.addEventListener('pointercancel',stop);
 
@@ -560,7 +604,7 @@ $('#chatForm').addEventListener('submit',async e=>{
 
 /* Start: gespeicherte Welt laden */
 let first='std';try{first=localStorage.getItem('bolt-theme')||'std'}catch(e){}
-applyTheme(first);drawAim();
+applyTheme(first);drawAim();drvUi();
 
 /* Offline-Fähigkeit: Service Worker */
 if('serviceWorker' in navigator&&location.protocol.startsWith('http')){
