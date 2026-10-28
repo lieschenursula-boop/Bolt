@@ -112,10 +112,14 @@ dialog#settings h3{font:700 15px/1.2 var(--font-ui);margin:10px 0 0;text-align:c
 .msg.mine{align-self:flex-end;background:var(--pribg);color:var(--pritext)}
 .msg.them{align-self:flex-start;background:var(--pill);color:var(--text);border:2px solid var(--pillb)}
 .msg.part{opacity:.7;font-style:italic}
+.msg.sys{align-self:center;max-width:95%;background:transparent;border:2px dashed color-mix(in srgb,var(--text) 40%,transparent);color:var(--text);font-size:13px;font-weight:600;text-align:center}
 .msg small{display:block;font-weight:600;font-size:11px;opacity:.8}
 #ct{margin:0 0 8px;font-size:13px;font-weight:600;text-align:center;min-height:1.4em}
 .chatform{display:flex;gap:8px}
 .chatform input{flex:1;min-width:0;font:700 16px var(--font-ui);padding:8px 14px;border-radius:var(--pr);border:3px solid var(--secborder);background:var(--secbg);color:var(--sectext)}
+nav button{position:relative}
+.badge{position:absolute;top:-8px;right:-4px;min-width:22px;height:22px;padding:0 5px;border-radius:999px;background:#e03131;color:#fff;font:800 12px/22px var(--font-ui);text-align:center;box-shadow:0 2px 0 rgba(0,0,0,.25);pointer-events:none}
+.badge[hidden]{display:none}
 .rl{font-size:14px;font-weight:700}
 
 .drvseg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
@@ -123,6 +127,7 @@ dialog#settings h3{font:700 15px/1.2 var(--font-ui);margin:10px 0 0;text-align:c
 .drvseg button[aria-pressed="true"]{background:var(--pribg);color:var(--pritext);border-color:var(--priborder);box-shadow:var(--prishadow)}
 
 /* Welten */
+#dbgbox{margin-top:16px}#dbgbox summary{cursor:pointer;font-weight:700;padding:8px 0}#dbgpre{font:11px/1.4 monospace;white-space:pre-wrap;word-break:break-all;max-height:220px;overflow:auto;background:rgba(0,0,0,.08);border-radius:10px;padding:8px;margin:8px 0 0}
 #tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin-top:8px}
 button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px;
   font:700 14px/1.2 var(--font-ui);color:var(--text);border-radius:20px}
@@ -142,7 +147,7 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
   <button id="conn" class="pri">Verbinden</button></div>
 </header>
 <p id="st" role="status">Noch nicht verbunden. BOLT schütteln oder laden, dann auf „Verbinden“ tippen.</p>
-<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button><button role="tab" aria-selected="false" data-t="ir">Infrarot</button><button role="tab" aria-selected="false" data-t="chat">Chat</button></nav>
+<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button><button role="tab" aria-selected="false" data-t="ir">Infrarot</button><button role="tab" aria-selected="false" data-t="chat">Chat<span class="badge" id="cbadge" hidden>0</span></button></nav>
 
 <section id="drive">
   <div id="pad"><div id="knob" class="snap"><svg id="knobSvg" viewBox="0 0 120 120" aria-hidden="true"></svg></div></div>
@@ -197,7 +202,9 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
   <div>
     <div id="chatlog" aria-live="polite"></div>
     <p id="ct" role="status"></p>
+    <p id="cdiag" class="note" style="margin:0 0 8px"></p>
     <form id="chatForm" class="chatform"><input id="chatIn" maxlength="40" autocomplete="off" placeholder="Schreibe etwas …" aria-label="Nachricht"><button id="chatSend" class="pri" type="submit">Senden</button></form>
+    <div class="row mid"><button id="rxRestart" type="button">Empfang neu starten</button></div>
     <div class="row mid"><label for="irRange" class="rl">Reichweite</label><input id="irRange" type="range" min="8" max="64" value="40" style="max-width:200px"></div>
   </div>
   <p class="note">Experimentell: Die Nachricht wird als Infrarot-Blitze von BOLT zu BOLT geschickt. Beide BOLTs müssen sich ansehen (etwa 1 Meter) und mit je einem Handy verbunden sein. Nur Großbuchstaben, Zahlen und einige Zeichen.</p>
@@ -211,6 +218,11 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
   <p id="drvTxt" class="note" style="margin-top:6px"></p>
   <h3>Design wählen</h3>
   <div id="tgrid"></div>
+  <details id="dbgbox"><summary>Technik-Protokoll (für Fehlersuche)</summary>
+    <p class="note">Hier steht, was die App an den BOLT schickt und was zurückkommt. Mit „Kopieren“ kannst du es weitergeben.</p>
+    <div class="row mid"><button id="dbgCopy" type="button">Kopieren</button></div>
+    <pre id="dbgpre"></pre>
+  </details>
 </dialog>
 
 <script src="themes.js"></script>
@@ -223,7 +235,12 @@ let aiming=false,off=0,rot=0;
 const st=(t,e)=>{const s=$('#st');s.textContent=t;s.className=e?'err':''};
 const stats={};let rx=[];
 const ERR={1:'Geräte-ID falsch',2:'Befehl unbekannt',3:'nicht umgesetzt',4:'gesperrt',5:'Datenlänge falsch',6:'fehlgeschlagen',7:'Wert ungültig',8:'beschäftigt',9:'Ziel falsch',10:'Ziel nicht erreichbar'};
-const log=t=>console.debug('[BOLT]',t);
+const DBG=[];
+const hx=a=>Array.from(a).map(x=>x.toString(16).padStart(2,'0')).join(' ');
+function dbgShow(){const p=document.getElementById('dbgpre');if(p&&p.offsetParent!==null)p.textContent=DBG.join('\n')}
+const log=t=>{console.debug('[BOLT]',t);const d=new Date(),z=n=>String(n).padStart(2,'0');DBG.push(z(d.getHours())+':'+z(d.getMinutes())+':'+z(d.getSeconds())+' '+t);if(DBG.length>150)DBG.shift();dbgShow()};
+const SEQV={},NZ={};
+function noisy(c){if(c!==34&&c!==63)return true;NZ[c]=(NZ[c]||0)+1;return NZ[c]<=4}
 function onRx(e){
   const v=e.target.value,u=new Uint8Array(v.buffer,v.byteOffset,v.byteLength);
   for(const x of u){if(x===0x8D){rx=[]}else if(x===0xD8){parse(rx);rx=[]}else rx.push(x)}
@@ -235,7 +252,10 @@ function parse(r){
   if(f&0x10)i++;
   if(f&0x20)i++;
   const did=b[i],cid=b[i+1],er=b[i+3];
+  if(did===24&&noisy(cid))log((f&1?'Antwort ':'Meldung ')+'IR '+cid+(f&1?' Fehler='+er+(er?' ('+(ERR[er]||'?')+')':' ok'):'')+' · '+hx(b.slice(0,14)));
+  if(f&1){const m=SEQV[b[i+2]];if(m&&m.did===did&&m.cmd===cid){delete SEQV[b[i+2]];if(typeof irAnswer==='function')irAnswer(m,er)}}
   if(did===24&&cid===44&&!(f&1)&&typeof irRx==='function'){irRx(b[i+3]);return}
+  if(did===24&&cid!==44&&cid!==34&&!(f&1)&&typeof irOther==='function')irOther(cid);
   if(did===24&&cid===34&&(f&1)&&er===0&&typeof irRead==='function'){let n=0;for(const x of b.slice(i+4,b.length-1))n=n*256+x;irRead(n)}
   if(!(f&1)||did===undefined||er===undefined)return;
   const k=did.toString(16)+'/'+cid.toString(16);
@@ -256,6 +276,17 @@ function packetNT(did,cmd,data){
   const o=[0x8D];
   for(const x of b){if(x===0xAB)o.push(0xAB,0x23);else if(x===0x8D)o.push(0xAB,0x05);else if(x===0xD8)o.push(0xAB,0x50);else o.push(x)}
   o.push(0xD8);return new Uint8Array(o);
+}
+function sendV(v,did,cmd,data){
+  if(!chr)return;
+  q=q.then(()=>{
+    if(!chr)return;
+    const pk=v==='B'?packet(0x12,did,cmd,data):v==='C'?packet(0x11,did,cmd,data):packetNT(did,cmd,data);
+    const sq=(seq-1)&255;
+    SEQV[sq]={v,did,cmd};
+    if(noisy(cmd))log('Sende '+v+' IR '+cmd+' · '+hx(pk));
+    return chr.writeValueWithoutResponse(pk);
+  }).catch(e=>log('Schreibfehler: '+(e.message||e)));
 }
 function sendNT(did,cmd,data){
   if(!chr)return;
@@ -279,14 +310,14 @@ async function connect(){
   try{
     st('Suche BOLT …');
     dev=await navigator.bluetooth.requestDevice({filters:[{namePrefix:'SB-'}],optionalServices:[SVC,ASVC]});
-    dev.addEventListener('gattserverdisconnected',()=>{chr=null;if(typeof irStop==='function'){IR.notify=false;irStop(true)};$('#conn').textContent='Verbinden';st('Verbindung getrennt.',1)});
+    dev.addEventListener('gattserverdisconnected',()=>{chr=null;clearTimeout(IR.probeT);IR.probeT=null;if(typeof irStop==='function'){IR.notify=false;irStop(true);wake(false)};$('#conn').textContent='Verbinden';st('Verbindung getrennt.',1)});
     const srv=await dev.gatt.connect();
     const as=await srv.getPrimaryService(ASVC);
     const a=await as.getCharacteristic(ACH);
     await a.writeValue(new TextEncoder().encode('usetheforce...band'));
     const c=await (await srv.getPrimaryService(SVC)).getCharacteristic(API);
     try{await c.startNotifications();c.addEventListener('characteristicvaluechanged',onRx)}catch(e){log('Antworten aus: '+(e.message||e))}
-    for(const u of ['00020002','00020003']){try{const x=await as.getCharacteristic(U(u));await x.startNotifications();x.addEventListener('characteristicvaluechanged',()=>log('Meldung von Kanal '+u))}catch(e){log('Kanal '+u+': '+(e.message||e))}}
+    for(const u of ['00020002','00020003']){try{const x=await as.getCharacteristic(U(u));await x.startNotifications();x.addEventListener('characteristicvaluechanged',ev=>{const w=ev.target.value;log('Kanal '+u+': '+hx(new Uint8Array(w.buffer,w.byteOffset,Math.min(w.byteLength,16))))})}catch(e){log('Kanal '+u+': '+(e.message||e))}}
     chr=c;off=0;drawAim();
     send(0x11,0x13,0x0D,[]);
     await new Promise(r=>setTimeout(r,400));
@@ -494,24 +525,76 @@ mark();
 
 
 let curTab='drive';
-function irTabChange(t){curTab=t;if(t!=='ir')irStop(true);irNotify(t==='ir'||t==='chat')}
+function irTabChange(t){
+  curTab=t;if(t!=='ir')irStop(true);
+  if(t==='chat'){unread=0;badge();if(!chr)$('#ct').textContent='Verbinde zuerst deinen BOLT (Knopf oben), um Nachrichten zu empfangen.';wake(true);chatDiag()}
+  else wake(false);
+}
+let unread=0,wl=null;
+function badge(){const b=$('#cbadge');b.textContent=unread;b.hidden=!unread}
+async function wake(on){
+  try{
+    if(on&&chr&&!wl&&navigator.wakeLock){wl=await navigator.wakeLock.request('screen');wl.addEventListener('release',()=>{wl=null})}
+    else if(!on&&wl){await wl.release();wl=null}
+  }catch(e){wl=null}
+}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&curTab==='chat')wake(true)});
+function ding(){
+  try{navigator.vibrate&&navigator.vibrate([120,60,120])}catch(e){}
+  try{
+    const a=new (window.AudioContext||window.webkitAudioContext)(),t=a.currentTime;
+    [660,880].forEach((fr,i)=>{const o=a.createOscillator(),g=a.createGain();o.frequency.value=fr;o.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.15,t+i*.14);g.gain.exponentialRampToValueAtTime(.001,t+i*.14+.12);o.start(t+i*.14);o.stop(t+i*.14+.13)});
+  }catch(e){}
+}
+function incoming(){ding();if(curTab!=='chat'){unread++;badge();if(!$('#st').classList.contains('err'))st('Neue Chat-Nachricht! Tippe auf „Chat“.')}}
+function irOther(cid){IR.other++;log('IR-Meldung '+cid)}
+function chatDiag(){
+  const ago=IR.lastT?Math.round((Date.now()-IR.lastT)/1000)+' s':'noch nie';
+  $('#cdiag').textContent=(chr?'Empfang: '+(IR.notify?'an':'wird gestartet'):'Empfang: aus (nicht verbunden)')+' · Blitze: '+IR.flash+(IR.other?' · andere Meldungen: '+IR.other:'')+' · IR-Befehle: '+IR.state+' · zuletzt: '+ago;
+}
+setInterval(()=>{if(curTab==='chat')chatDiag()},1000);
 
 /* Infrarot-Radar und Chat (Befehle aus der öffentlichen Sphero-Doku / spherov2, ohne echten BOLT getestet) */
-const IR={mode:null,poll:null,seen:[0,0,0,0],notify:false};
+const IR={mode:null,poll:null,seen:[0,0,0,0],notify:false,flash:0,other:0,lastT:0};
 const NEAR=0,FAR=1;
+IR.var=null;IR.state='noch nicht gestartet';IR.probeI=0;IR.probeT=null;
+const VARS=['A','B','C'];
+function irCmd(cmd,data){sendV(IR.var||'A',24,cmd,data)}
+function irProbe(){
+  clearTimeout(IR.probeT);IR.probeT=null;IR.var=null;IR.probeI=0;IR.state='probiere …';
+  irProbeStep();
+}
+function irProbeStep(){
+  clearTimeout(IR.probeT);IR.probeT=null;
+  if(!chr||IR.var)return;
+  if(IR.probeI>=VARS.length){IR.var='A';IR.notify=true;IR.state='keine Antwort, Standard A';log('IR: keine Antwort auf Variante A, B, C – nehme A');chatDiag();return}
+  const v=VARS[IR.probeI++];
+  IR.state='probiere '+v+' …';
+  sendV(v,24,62,[1]);
+  IR.probeT=setTimeout(irProbeStep,800);
+}
+function irAnswer(m,er){
+  if(m.cmd===62&&IR.probeT&&!IR.var){
+    if(er===0){clearTimeout(IR.probeT);IR.probeT=null;IR.var=m.v;IR.notify=true;IR.state='Variante '+m.v+' ok';log('IR: Variante '+m.v+' wird vom BOLT akzeptiert')}
+    else irProbeStep();
+    chatDiag();
+  }
+}
+$('#dbgbox').addEventListener('toggle',()=>{const p=$('#dbgpre');p.textContent=DBG.join('\n');p.scrollTop=p.scrollHeight});
+$('#dbgCopy').onclick=async()=>{const t=DBG.join('\n');try{await navigator.clipboard.writeText(t);$('#dbgCopy').textContent='Kopiert!'}catch(e){const p=$('#dbgpre');const r=document.createRange();r.selectNodeContents(p);const sel=getSelection();sel.removeAllRanges();sel.addRange(r);$('#dbgCopy').textContent='Markiert – lange tippen & kopieren'}setTimeout(()=>$('#dbgCopy').textContent='Kopieren',2500)};
 function irNeed(){if(!chr){st('Verbinde zuerst deinen BOLT (Knopf oben).',1);return false}return true}
 function irNotify(on){
   if(!chr){IR.notify=false;return}
   if(on===IR.notify)return;
-  IR.notify=on;sendNT(24,62,[on?1:0]);
+  IR.notify=on;irCmd(62,[on?1:0]);
 }
-function irOnConnect(){IR.notify=false;if(curTab==='chat'||curTab==='ir')irNotify(true)}
+function irOnConnect(){IR.notify=false;irProbe();if(curTab==='chat'){$('#ct').textContent='';wake(true)}}
 function irStop(quiet){
   clearInterval(IR.poll);IR.poll=null;
   if(chr&&IR.mode){
-    if(IR.mode==='send')sendNT(24,41,[]);
-    if(IR.mode==='follow')sendNT(24,50,[]);
-    if(IR.mode==='evade')sendNT(24,52,[]);
+    if(IR.mode==='send')irCmd(41,[]);
+    if(IR.mode==='follow')irCmd(50,[]);
+    if(IR.mode==='evade')irCmd(52,[]);
     if(IR.mode==='follow'||IR.mode==='evade')send(0x12,0x16,0x07,[0,0,0,0]);
   }
   IR.mode=null;IR.seen=[0,0,0,0];irDraw();
@@ -521,10 +604,10 @@ function irStart(m){
   if(!irNeed())return;
   irStop(true);irNotify(true);
   IR.mode=m;
-  if(m==='send'){sendNT(24,39,[FAR,NEAR]);$('#irt').textContent='Dein BOLT sendet. Ein zweiter BOLT mit „Ich suche“ kann ihn jetzt sehen.'}
-  if(m==='look'){IR.poll=setInterval(()=>sendNT(24,34,[]),350);$('#irt').textContent='Dein BOLT sucht. Die Felder leuchten, wo er einen sendenden BOLT sieht.'}
-  if(m==='follow'){sendNT(24,40,[FAR,NEAR]);$('#irt').textContent='Dein BOLT folgt einem sendenden BOLT. Achtung: Er rollt los!'}
-  if(m==='evade'){sendNT(24,51,[FAR,NEAR]);$('#irt').textContent='Dein BOLT rollt vor einem sendenden BOLT weg. Achtung: Er rollt los!'}
+  if(m==='send'){irCmd(39,[FAR,NEAR]);$('#irt').textContent='Dein BOLT sendet. Ein zweiter BOLT mit „Ich suche“ kann ihn jetzt sehen.'}
+  if(m==='look'){IR.poll=setInterval(()=>irCmd(34,[]),350);$('#irt').textContent='Dein BOLT sucht. Die Felder leuchten, wo er einen sendenden BOLT sieht.'}
+  if(m==='follow'){irCmd(40,[FAR,NEAR]);$('#irt').textContent='Dein BOLT folgt einem sendenden BOLT. Achtung: Er rollt los!'}
+  if(m==='evade'){irCmd(51,[FAR,NEAR]);$('#irt').textContent='Dein BOLT rollt vor einem sendenden BOLT weg. Achtung: Er rollt los!'}
 }
 $('#irSend').onclick=()=>irStart('send');$('#irLook').onclick=()=>irStart('look');
 $('#irFol').onclick=()=>irStart('follow');$('#irEva').onclick=()=>irStart('evade');
@@ -553,39 +636,44 @@ function irEncode(text){
   for(const i of idx)for(const bits of [(i>>4)&3,(i>>2)&3,i&3]){codes.push(tg*4+bits);tg^=1}
   return codes;
 }
-const CH={bits:[],last:null,t:0,buf:'',timer:null,sending:false};
+const CH={bits:[],last:null,t:0,buf:'',timer:null,sending:false,raw:[]};
+const hhmm=()=>new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
 function chatAdd(cls,text,note){
   const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;
   if(note){const n=document.createElement('small');n.textContent=note;d.appendChild(n)}
   $('#chatlog').appendChild(d);$('#chatlog').scrollTop=1e6;return d;
 }
+/* Live-Blase: erscheint beim ersten Infrarot-Blitz und füllt sich Buchstabe für Buchstabe */
 function chatPart(){
   let el=$('#chatlog .part');
-  if(!CH.buf){if(el)el.remove();return}
+  if(!CH.raw.length){if(el)el.remove();return}
   if(!el)el=chatAdd('them part','');
-  el.textContent=CH.buf+' …';$('#chatlog').scrollTop=1e6;
+  el.textContent=(CH.buf||'')+' …';$('#chatlog').scrollTop=1e6;
 }
 function chatCommit(incomplete){
   clearTimeout(CH.timer);
   const el=$('#chatlog .part');if(el)el.remove();
-  if(CH.buf)chatAdd('them',CH.buf,incomplete?'unvollständig empfangen':'');
-  CH.buf='';CH.bits=[];CH.last=null;
+  if(CH.buf){chatAdd('them',CH.buf,hhmm()+(incomplete?' · unvollständig empfangen':''));incoming()}
+  else if(CH.raw.length){chatAdd('sys','Infrarot-Signal empfangen, aber nicht lesbar (Kanäle: '+CH.raw.slice(0,12).join(', ')+(CH.raw.length>12?' …':'')+')',hhmm());incoming()}
+  CH.buf='';CH.bits=[];CH.last=null;CH.raw=[];
 }
 function irRx(code){
   if(typeof code!=='number'||code<0||code>7)return;
   const now=Date.now();
   if(now-CH.t>1500){CH.bits=[];CH.last=null}
   const tg=code>>2;
-  CH.t=now;
+  CH.t=now;IR.flash++;IR.lastT=now;
   if(CH.last!==null&&tg===CH.last)return;
-  CH.last=tg;CH.bits.push(code&3);
-  clearTimeout(CH.timer);CH.timer=setTimeout(()=>chatCommit(true),4000);
+  CH.last=tg;CH.bits.push(code&3);CH.raw.push(code);
+  clearTimeout(CH.timer);CH.timer=setTimeout(()=>chatCommit(true),2500);
+  if(CH.raw.length===1)chatPart();
   if(CH.bits.length===3){
     const i=(CH.bits[0]<<4)|(CH.bits[1]<<2)|CH.bits[2];CH.bits=[];
     if(i===ENDC)chatCommit(false);
     else{CH.buf+=ALPHA[i]||'?';chatPart()}
   }
 }
+$('#rxRestart').onclick=()=>{if(!irNeed())return;IR.notify=false;irCmd(62,[0]);setTimeout(()=>irNotify(true),150);$('#ct').textContent='Empfang neu gestartet.';chatDiag()};
 $('#chatForm').addEventListener('submit',async e=>{
   e.preventDefault();
   const text=$('#chatIn').value.trim();
@@ -596,7 +684,7 @@ $('#chatForm').addEventListener('submit',async e=>{
   chatAdd('mine',text);$('#chatIn').value='';
   for(let k=0;k<codes.length;k++){
     $('#ct').textContent='Sende … '+Math.round((k+1)/codes.length*100)+' %';
-    sendNT(24,63,[codes[k],inten,inten,inten,inten]);
+    irCmd(63,[codes[k],inten,inten,inten,inten]);
     await new Promise(r=>setTimeout(r,IR_GAP));
   }
   $('#ct').textContent='Gesendet.';CH.sending=false;$('#chatSend').disabled=false;

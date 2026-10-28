@@ -1,14 +1,7 @@
-BOLT Steuerung – Version 2.50
+BOLT Steuerung V2.80 – nur diese Dateien auf GitHub hochladen (alte ersetzen):
+index.html und sw.js (die anderen sind unveraendert). Danach die App 2x neu oeffnen.
 
-NEU: Stabileres Fahren, damit sich der BOLT nicht ueberschlaegt.
-- Der BOLT beschleunigt und bremst jetzt in Stufen statt sofort.
-- Bei scharfen Wendungen (ueber 100 Grad) bremst er erst ab und dreht dann.
-- Stabilisierung wird beim Verbinden und beim Fahrstart eingeschaltet.
-- Einstellungen (Zahnrad) > Fahrstil: Sanft (Standard) / Normal / Flott.
-
-UPDATE auf GitHub:
-1. "Add file" > "Upload files".
-2. Geaendert gegenueber V2.40: index.html und sw.js.
-3. "Commit changes", 1-2 Minuten warten, App schliessen und neu oeffnen.
-
-Spaeter: In sw.js die Zeile  const CACHE = 'bolt-v7';  hochzaehlen (v8 ...).
+NEU: Der BOLT-Infrarot-Empfang wird jetzt auf drei Arten probiert, die App merkt sich die richtige.
+Einstellungen (Zahnrad) -> "Technik-Protokoll" -> Kopieren: zeigt, was der BOLT antwortet.
+Im Chat steht unter dem Verlauf eine Diagnose-Zeile (Empfang / Blitze / IR-Befehle).
+Hinweis: Mit einem echten BOLT noch nicht getestet.
