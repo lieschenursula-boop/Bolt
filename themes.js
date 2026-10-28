@@ -194,7 +194,7 @@ const THEMES = [
     '--dot': '#c9b6ff', '--dotborder': '#4a1f55', '--shell': 'radial-gradient(circle at 35% 28%,#fff5fb,#ffd1ea 55%,#ff9bd0)', '--ledpanel': '#4a1f55', '--ledoff': '#6a3a78'
   }, B.cat, DECOR.cat),
   T('arcade', 'Arcade', '#0d0221', {
-    '--font-head': "'Press Start 2P',monospace", '--headw': '400', '--h1': '12px', '--h1lh': '1.6', '--tabsize': '11px', '--bubsize': '10px', '--bubnum': '10px', '--dialsize': '15px', '--pr': '10px',
+    '--font-head': "'Press Start 2P',monospace", '--headw': '400', '--h1': '12px', '--h1lh': '1.6', '--tabsize': '9px', '--bubsize': '10px', '--bubnum': '10px', '--dialsize': '15px', '--pr': '10px',
     '--bg': 'linear-gradient(180deg,#0d0221 0%,#1a0a40 100%)', '--text': '#ffffff', '--panel': 'rgba(26,10,64,.92)', '--pborder': '#ff2bd6', '--pill': 'rgba(0,240,255,.1)', '--pillb': '#00f0ff',
     '--pribg': '#ffe14d', '--pritext': '#0d0221', '--priborder': '#ffffff', '--prishadow': '4px 4px 0 #ff2bd6',
     '--secbg': 'transparent', '--sectext': '#00f0ff', '--secborder': '#00f0ff', '--secshadow': '4px 4px 0 #00f0ff',

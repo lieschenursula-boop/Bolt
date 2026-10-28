@@ -1,22 +1,17 @@
-BOLT Steuerung – Version 2.20
+BOLT Steuerung – Version 2.40
 
-NEU: Tab "Radar" mit zwei Ansichten
-- Uebersicht: andere BOLTs in der Naehe als Punkte (Umlaufbahn-Radar)
-- Heiss-Kalt: einen BOLT waehlen und per Signalstaerke finden
-Beides passt sich allen 11 Designs an.
+GEAENDERT:
+- Der Bluetooth-Radar (Uebersicht, Heiss-Kalt) ist ENTFERNT.
+- Der Chat ist jetzt ein eigener Tab. Tabs: Fahren | Display | Infrarot | Chat.
+- Infrarot: dein verbundener BOLT zeigt, wo ein anderer BOLT ist, der "sendet" (Folgen / Weglaufen).
+- Chat: Nachrichten per Infrarot von BOLT zu BOLT.
 
-WICHTIG:
-- Gesehen werden nur BOLTs, die nicht mit einem Handy verbunden sind.
-- Das Handy misst nur die Signalstaerke, keine Richtung. Entfernung = Schaetzung.
-- Falls "Suchen" nicht von allein klappt: Tippe auf "BOLT hinzufuegen"
-  (jeden BOLT einzeln). Oder in Chrome die Adresse
-  chrome://flags/#enable-experimental-web-platform-features
-  oeffnen, Schalter auf "Enabled", Chrome neu starten.
+WICHTIG: Infrarot und Chat sind EXPERIMENTELL und nicht mit einem echten BOLT getestet.
+Du brauchst zwei BOLTs, je mit einem Handy verbunden. "Folgen" und "Weglaufen" lassen den BOLT rollen.
 
 UPDATE auf GitHub:
 1. "Add file" > "Upload files".
-2. Geaendert gegenueber V2.10: index.html und sw.js. Diese beiden hochladen
-   (am besten den ganzen Inhalt dieses Ordners, nicht den Ordner selbst).
+2. Geaendert gegenueber V2.30: index.html, themes.js und sw.js.
 3. "Commit changes", 1-2 Minuten warten, App schliessen und neu oeffnen.
 
-Spaeter: In sw.js die Zeile  const CACHE = 'bolt-v4';  hochzaehlen (v5 ...).
+Spaeter: In sw.js die Zeile  const CACHE = 'bolt-v6';  hochzaehlen (v7 ...).
