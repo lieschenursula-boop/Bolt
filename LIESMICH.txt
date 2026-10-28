@@ -1,13 +1,22 @@
-BOLT Steuerung – Version 2.10
+BOLT Steuerung – Version 2.20
 
-NEU: Oben rechts gibt es ein Zahnrad. Dort oeffnen sich die Einstellungen,
-und du kannst eines von 11 Designs waehlen. Die Wahl wird gespeichert.
+NEU: Tab "Radar" mit zwei Ansichten
+- Uebersicht: andere BOLTs in der Naehe als Punkte (Umlaufbahn-Radar)
+- Heiss-Kalt: einen BOLT waehlen und per Signalstaerke finden
+Beides passt sich allen 11 Designs an.
+
+WICHTIG:
+- Gesehen werden nur BOLTs, die nicht mit einem Handy verbunden sind.
+- Das Handy misst nur die Signalstaerke, keine Richtung. Entfernung = Schaetzung.
+- Falls "Suchen" nicht von allein klappt: Tippe auf "BOLT hinzufuegen"
+  (jeden BOLT einzeln). Oder in Chrome die Adresse
+  chrome://flags/#enable-experimental-web-platform-features
+  oeffnen, Schalter auf "Enabled", Chrome neu starten.
 
 UPDATE auf GitHub:
-1. Im Repository "Add file" > "Upload files".
-2. Den INHALT dieses Ordners hineinziehen (nicht den Ordner selbst):
-   index.html, sw.js und alle anderen Dateien plus den Ordner "fonts".
-   Hat sich gegenueber V2.00 nur index.html und sw.js geaendert, reichen diese beiden.
+1. "Add file" > "Upload files".
+2. Geaendert gegenueber V2.10: index.html und sw.js. Diese beiden hochladen
+   (am besten den ganzen Inhalt dieses Ordners, nicht den Ordner selbst).
 3. "Commit changes", 1-2 Minuten warten, App schliessen und neu oeffnen.
 
-Spaeter: In sw.js die Zeile  const CACHE = 'bolt-v3';  hochzaehlen (v4 ...).
+Spaeter: In sw.js die Zeile  const CACHE = 'bolt-v4';  hochzaehlen (v5 ...).

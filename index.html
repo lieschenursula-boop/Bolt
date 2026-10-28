@@ -33,7 +33,7 @@ button.round{width:48px;padding:0;font-size:24px;line-height:1}
 #st{background:var(--pill);border:3px solid var(--pillb);border-radius:22px;padding:6px 16px;color:var(--text);font-size:14px;font-weight:600;margin:0 0 12px;min-height:2.4em}
 #st.err{background:#ffe3e6;color:#a40e26;border-color:#ffc2c9}
 
-nav{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px}
+nav{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px}
 nav button{padding:8px 4px;min-height:44px;font-family:var(--font-head);font-weight:var(--headw);font-size:var(--tabsize)}
 section[hidden]{display:none}
 
@@ -99,6 +99,39 @@ dialog#settings::backdrop{background:rgba(0,0,0,.45)}
 #setX{width:44px;height:44px;min-height:0;padding:0;border-radius:50%;font-size:18px}
 dialog#settings h3{font:700 15px/1.2 var(--font-ui);margin:10px 0 0;text-align:center}
 
+/* Radar */
+.seg{display:flex;gap:8px;margin:0 0 12px}
+.seg button{flex:1;min-height:44px;padding:6px 8px;font-size:15px;font-family:var(--font-head);font-weight:var(--headw)}
+.seg button[aria-pressed="true"],#hchips button[aria-pressed="true"]{background:var(--pribg);color:var(--pritext);border-color:var(--priborder);box-shadow:var(--prishadow)}
+#orb,#hot{position:relative;width:min(82vw,300px);aspect-ratio:1;margin:4px auto 14px}
+.glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle closest-side,color-mix(in srgb,var(--dialfill) 30%,transparent),color-mix(in srgb,var(--dialfill) 8%,transparent) 70%,transparent)}
+.orbit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;box-sizing:border-box;border:3px dashed color-mix(in srgb,var(--text) 45%,transparent)}
+.sweep{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0deg,color-mix(in srgb,var(--dialfill) 55%,transparent) 55deg,transparent 56deg);animation:spin 4s linear infinite}
+#orb.idle .sweep{animation-play-state:paused;opacity:.35}
+@keyframes spin{to{transform:rotate(360deg)}}
+.me{position:absolute;left:50%;top:50%;width:46px;height:46px;transform:translate(-50%,-50%);overflow:visible;filter:drop-shadow(0 0 8px rgba(255,255,255,.6))}
+.dot{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;transform:translate(-50%,-50%);transition:left .8s,top .8s,opacity .5s;pointer-events:none}
+.dot svg{width:36px;height:36px;overflow:visible;filter:drop-shadow(0 0 7px var(--c))}
+.dot span{font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;background:var(--pill);border:2px solid var(--pillb);color:var(--text);white-space:nowrap}
+.dot.stale{opacity:.35}
+.rrow{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:22px;background:var(--panel);border:3px solid var(--pborder);margin-bottom:8px}
+.rrow svg.bl{width:36px;height:36px;flex:none;overflow:visible;filter:drop-shadow(0 0 6px var(--c))}
+.rrow .nm{flex:1;min-width:0}.rrow b{display:block;font-size:15px}.rrow small{font-size:12px;font-weight:600}
+.rrow button{min-height:44px;padding:4px 14px;font-size:14px}
+.sig{color:var(--dialfill);flex:none}.sig .off{fill-opacity:.25}
+.rip{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;box-sizing:border-box;border:4px solid color-mix(in srgb,var(--text) 40%,transparent)}
+#hb{position:absolute;inset:15%;border-radius:50%;background:radial-gradient(circle at 35% 28%,#fff,#e6fbff 30%,#bfeaf7 100%);border:5px solid #fff;box-shadow:var(--padshadow);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;text-align:center;color:#062a52}
+#hbBall{width:42%;height:42%;overflow:visible;filter:drop-shadow(0 4px 0 rgba(0,0,0,.18));transition:transform .6s}
+#hw{font:var(--headw) 30px/1.05 var(--font-head);margin-top:2px}
+#hn{font-size:13px;font-weight:700}
+.therm{background:var(--panel);border:3px solid var(--pborder);border-radius:24px;padding:10px 16px 14px;margin-bottom:10px}
+.therm .lbl{display:flex;justify-content:space-between;font-weight:800;font-size:14px;margin-bottom:6px}
+.tbar{position:relative;height:22px;border-radius:999px;background:linear-gradient(90deg,#4fc3ea,#ffd84d,#ff6b3d);border:3px solid var(--text);box-sizing:border-box}
+#tthumb{position:absolute;top:-8px;width:30px;height:30px;margin-left:-15px;border-radius:50%;background:#fff;border:4px solid var(--text);box-sizing:border-box;transition:left .6s;left:0}
+#ht{margin:10px 0 0;font-size:14px;font-weight:700;text-align:center;min-height:1.4em}
+#hchips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+#hchips button{min-height:46px;padding:4px 14px;font-size:14px}
+
 /* Welten */
 #tgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin-top:8px}
 button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:0;display:flex;flex-direction:column;align-items:center;gap:6px;
@@ -119,7 +152,7 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
   <button id="conn" class="pri">Verbinden</button></div>
 </header>
 <p id="st" role="status">Noch nicht verbunden. BOLT schütteln oder laden, dann auf „Verbinden“ tippen.</p>
-<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button></nav>
+<nav role="tablist"><button role="tab" aria-selected="true" data-t="drive">Fahren</button><button role="tab" aria-selected="false" data-t="disp">Display</button><button role="tab" aria-selected="false" data-t="radar">Radar</button></nav>
 
 <section id="drive">
   <div id="pad"><div id="knob" class="snap"><svg id="knobSvg" viewBox="0 0 120 120" aria-hidden="true"></svg></div></div>
@@ -151,6 +184,29 @@ button.tchip{background:none;border:none;box-shadow:none;padding:4px;min-height:
 </section>
 
 
+<section id="radar" hidden>
+  <div class="seg" role="group" aria-label="Ansicht"><button id="vOrb" aria-pressed="true">Übersicht</button><button id="vHot" aria-pressed="false">Heiß-Kalt</button></div>
+  <div class="row mid" style="margin:0 0 8px"><button id="scan" class="pri">Suchen</button><button id="addb" hidden>BOLT hinzufügen</button></div>
+  <div id="vOrbBox">
+    <div id="orb" class="idle" aria-hidden="true">
+      <div class="glow"></div>
+      <div class="orbit" style="width:98%;height:98%"></div><div class="orbit" style="width:70%;height:70%"></div><div class="orbit" style="width:40%;height:40%"></div>
+      <div class="sweep"></div>
+      <div id="dots"></div>
+      <svg id="meBall" class="me" viewBox="0 0 120 120"></svg>
+    </div>
+    <div id="rlist"></div>
+  </div>
+  <div id="vHotBox" hidden>
+    <div id="hot" aria-hidden="true">
+      <div class="rip" style="width:98%;height:98%"></div><div class="rip" style="width:84%;height:84%;opacity:.6"></div>
+      <div id="hb"><svg id="hbBall" viewBox="0 0 120 120"></svg><div id="hw">?</div><div id="hn">kein BOLT gewählt</div></div>
+    </div>
+    <div class="therm"><div class="lbl"><span>Kalt</span><span>Heiß</span></div><div class="tbar"><div id="tthumb"></div></div><p id="ht" role="status"></p></div>
+    <div id="hchips"></div>
+  </div>
+  <p class="note" id="rnote">Zeigt nur BOLTs, die gerade frei sind. Die Entfernung ist nur geschätzt, eine Richtung kann das Handy nicht erkennen.</p>
+</section>
 </main>
 
 <dialog id="settings" aria-labelledby="setT">
@@ -236,18 +292,20 @@ $('#conn').onclick=()=>{if(chr&&dev){dev.gatt.disconnect()}else connect()};
 /* Tabs */
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
   document.querySelectorAll('nav button').forEach(x=>x.setAttribute('aria-selected',x===b));
-  for(const id of ['drive','disp'])$('#'+id).hidden=b.dataset.t!==id;
+  for(const id of ['drive','disp','radar'])$('#'+id).hidden=b.dataset.t!==id;
+  radarTab(b.dataset.t==='radar');
 });
 
 /* Welten (Themes) */
-let themeId='std';
+let themeId='std',curBall='';
 function applyTheme(id){
   const t=THEMES.find(x=>x.id===id)||THEMES[0];
   themeId=t.id;
   const r=document.documentElement.style;
   for(const k in t.vars)r.setProperty(k,t.vars[k]);
   $('#decor').innerHTML=t.decor;
-  for(const sel of ['#logo','#knobSvg','#dBall'])$(sel).innerHTML=t.ball;
+  for(const sel of ['#logo','#knobSvg','#dBall','#meBall','#hbBall'])$(sel).innerHTML=t.ball;
+  curBall=t.ball;if(typeof radarTheme==='function')radarTheme();
   $('meta[name=theme-color]').content=t.bar;
   document.querySelectorAll('.tchip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===t.id));
   try{localStorage.setItem('bolt-theme',t.id)}catch(e){}
@@ -385,6 +443,141 @@ $('#file').onchange=e=>{
   im.src=URL.createObjectURL(f);e.target.value='';
 };
 mark();
+
+
+/* Radar: andere BOLTs in der Nähe (Signalstärke = RSSI) */
+const R={devs:new Map(),mode:'orb',sel:null,scanning:false,scanObj:null,ctrl:null,timer:null,last:'',lastHot:'',onTab:false,gotAny:false,startT:0};
+const COLS=['#5ee7ff','#ffd84d','#ff8fd0','#7bff9a','#ff9a3d','#b48cff'];
+const hash=s=>{let h=7;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return h};
+const lvl=r=>r>=-55?4:r>=-68?3:r>=-80?2:1;
+const LVT=['','weit weg','in der Nähe','nah','ganz nah'];
+const sigSvg=n=>'<svg class="sig" viewBox="0 0 28 22" width="28" height="22" role="img" aria-label="Signal '+n+' von 4">'+[[0,14,8],[7.5,9,13],[15,4.5,17.5],[22.5,0,22]].map((b,i)=>'<rect class="'+(n>i?'':'off')+'" x="'+b[0]+'" y="'+b[1]+'" width="5" height="'+b[2]+'" rx="2" fill="currentColor"/>').join('')+'</svg>';
+function onAdv(e){
+  const d=e.device||{},name=d.name||e.name||'';
+  if(!name.startsWith('SB-'))return;
+  const id=d.id||name,now=Date.now();
+  let v=R.devs.get(id);
+  if(!v){v={id,name,rssi:null,t:0,h:[],col:COLS[hash(id)%COLS.length],ang:(hash(name)%360)*Math.PI/180};R.devs.set(id,v)}
+  if(typeof e.rssi==='number'){
+    v.rssi=v.rssi==null?e.rssi:v.rssi*.6+e.rssi*.4;
+    v.h.push([now,v.rssi]);while(v.h.length&&now-v.h[0][0]>8000)v.h.shift();
+  }
+  v.t=now;R.gotAny=true;
+  if(!R.sel)R.sel=id;
+  drawRadar();
+}
+async function startScan(){
+  const bt=navigator.bluetooth;
+  if(!bt){st('Dieser Browser kann kein Bluetooth. Bitte Chrome auf Android nutzen.',1);return}
+  if(R.scanning)return;
+  R.gotAny=false;R.startT=Date.now();
+  if(bt.requestLEScan){
+    try{
+      R.scanObj=await bt.requestLEScan({filters:[{namePrefix:'SB-'}],keepRepeatedDevices:true});
+      bt.addEventListener('advertisementreceived',onAdv);
+      R.scanning=true;st('Suche läuft … BOLT einschalten und bereithalten.');
+    }catch(e){
+      if(e&&e.name==='NotAllowedError')st('Suche nicht erlaubt: '+(e.message||e),1);
+      else{R.scanObj=null;$('#addb').hidden=false;st('Automatische Suche geht hier nicht. Tippe auf „BOLT hinzufügen“ für jeden BOLT.',1)}
+    }
+  }else{
+    $('#addb').hidden=false;
+    st('Dein Chrome kann nicht von allein suchen. Tippe auf „BOLT hinzufügen“ für jeden BOLT.',1);
+  }
+  refreshScanUi();drawRadar();
+}
+async function addDevice(){
+  const bt=navigator.bluetooth;
+  try{
+    const d=await bt.requestDevice({filters:[{namePrefix:'SB-'}]});
+    if(!d.watchAdvertisements){st('Dein Chrome kann das Signal nicht mitlesen. In Chrome „chrome://flags/#enable-experimental-web-platform-features“ einschalten.',1);return}
+    d.addEventListener('advertisementreceived',onAdv);
+    R.ctrl=R.ctrl||new AbortController();
+    await d.watchAdvertisements({signal:R.ctrl.signal});
+    R.scanning=true;R.startT=Date.now();st('Höre auf '+d.name+' … ');refreshScanUi();
+  }catch(e){if(e&&e.name!=='NotFoundError')st('Fehler: '+(e.message||e),1)}
+}
+function stopScan(){
+  try{if(R.scanObj&&R.scanObj.stop)R.scanObj.stop()}catch(e){}
+  try{navigator.bluetooth&&navigator.bluetooth.removeEventListener&&navigator.bluetooth.removeEventListener('advertisementreceived',onAdv)}catch(e){}
+  try{R.ctrl&&R.ctrl.abort()}catch(e){}
+  R.scanObj=null;R.ctrl=null;R.scanning=false;refreshScanUi();
+}
+function refreshScanUi(){
+  $('#scan').textContent=R.scanning?'Stopp':'Suchen';
+  $('#scan').classList.toggle('pri',!R.scanning);
+  $('#orb').classList.toggle('idle',!R.scanning);
+}
+$('#scan').onclick=()=>R.scanning?(stopScan(),st('Suche beendet.')):startScan();
+$('#addb').onclick=addDevice;
+function setView(m){
+  R.mode=m;
+  $('#vOrb').setAttribute('aria-pressed',m==='orb');$('#vHot').setAttribute('aria-pressed',m==='hot');
+  $('#vOrbBox').hidden=m!=='orb';$('#vHotBox').hidden=m!=='hot';
+  R.last='';R.lastHot='';drawRadar();
+}
+$('#vOrb').onclick=()=>setView('orb');$('#vHot').onclick=()=>setView('hot');
+function radarTab(on){
+  R.onTab=on;clearInterval(R.timer);
+  if(on){R.timer=setInterval(drawRadar,1000);drawRadar()}
+  else if(R.scanning){stopScan()}
+}
+function radarTheme(){$('#dots').innerHTML='';R.last='';R.lastHot='';drawRadar()}
+function hotInfo(v){
+  const r=v&&v.rssi!=null?v.rssi:null;
+  if(r==null)return {w:'?',c:'#062a52',p:0,s:.8};
+  const p=Math.max(0,Math.min(1,(r+95)/50));
+  const L=r>=-50?['Ganz heiß!','#c92a2a']:r>=-62?['Heiß!','#d9480f']:r>=-72?['Warm','#b45f06']:r>=-82?['Kühl','#0b7285']:['Kalt','#1a6fb3'];
+  return {w:L[0],c:L[1],p,s:.8+.4*p};
+}
+function drawRadar(){
+  if(!R.onTab)return;
+  const now=Date.now();
+  for(const [k,v] of R.devs)if(now-v.t>40000){R.devs.delete(k);if(R.sel===k)R.sel=null}
+  const list=[...R.devs.values()].sort((a,b)=>(b.rssi??-999)-(a.rssi??-999));
+  if(!R.sel&&list.length)R.sel=list[0].id;
+  if(R.mode==='orb'){
+    const box=$('#dots'),have=new Set();
+    for(const v of list){
+      have.add(v.id);
+      let el=box.querySelector('[data-id="'+CSS.escape(v.id)+'"]');
+      if(!el){el=document.createElement('div');el.className='dot';el.dataset.id=v.id;el.style.setProperty('--c',v.col);
+        el.innerHTML='<svg viewBox="0 0 120 120">'+curBall+'</svg><span></span>';box.appendChild(el)}
+      el.lastChild.textContent=v.name;
+      const f=v.rssi==null?1:Math.max(0,Math.min(1,(-45-v.rssi)/50)),r=(.2+.64*f)*50;
+      el.style.left=(50+r*Math.sin(v.ang))+'%';el.style.top=(50-r*Math.cos(v.ang))+'%';
+      el.classList.toggle('stale',now-v.t>8000);
+    }
+    box.querySelectorAll('.dot').forEach(el=>{if(!have.has(el.dataset.id))el.remove()});
+    let h='';
+    for(const v of list){
+      const n=v.rssi==null?1:lvl(v.rssi),stale=now-v.t>8000;
+      h+='<div class="rrow" style="--c:'+v.col+'"><svg class="bl" viewBox="0 0 120 120" aria-hidden="true">'+curBall+'</svg><div class="nm"><b>'+v.name+'</b><small>'+(stale?'gerade nicht zu sehen':LVT[n])+'</small></div>'+sigSvg(stale?0:n)+'<button data-hot="'+v.id.replace(/"/g,'')+'">Suchen</button></div>';
+    }
+    if(!list.length)h='<p class="note">'+(R.scanning?'Noch kein BOLT gefunden. BOLT einschalten, schütteln und freihalten (nicht mit einem Handy verbunden).':'Tippe auf „Suchen“.')+'</p>';
+    if(h!==R.last){R.last=h;$('#rlist').innerHTML=h}
+  }else{
+    const v=R.devs.get(R.sel),I=hotInfo(v);
+    const stale=v&&now-v.t>8000;
+    $('#hw').textContent=stale?'weg?':I.w;$('#hw').style.color=stale?'#062a52':I.c;
+    $('#hn').textContent=v?v.name:'kein BOLT gewählt';
+    $('#hbBall').style.transform='scale('+I.s+')';
+    $('#tthumb').style.left=(I.p*100)+'%';
+    let t='';
+    if(v&&v.h.length>2&&!stale){
+      const old=v.h.find(x=>now-x[0]<=6000&&now-x[0]>=2500),d=old?v.rssi-old[1]:0;
+      t=d>=3?'Es wird wärmer!':d<=-3?'Es wird kälter …':'Geh ein Stück weiter.';
+    }else if(!v)t=R.scanning?'Suche läuft …':'Tippe auf „Suchen“.';
+    else if(stale)t='Signal weg. Geh zurück.';
+    $('#ht').textContent=t;
+    const ch=list.map(v=>'<button data-sel="'+v.id.replace(/"/g,'')+'" aria-pressed="'+(v.id===R.sel)+'">'+v.name+'</button>').join('');
+    if(ch!==R.lastHot){R.lastHot=ch;$('#hchips').innerHTML=ch}
+  }
+  if(R.scanning&&!R.gotAny&&now-R.startT>8000&&!R.warned){R.warned=true;st('Noch kein BOLT gesehen. Ist er an und mit keinem Handy verbunden?',1)}
+  if(R.gotAny)R.warned=false;
+}
+$('#rlist').addEventListener('click',e=>{const b=e.target.closest('[data-hot]');if(b){R.sel=b.dataset.hot;setView('hot')}});
+$('#hchips').addEventListener('click',e=>{const b=e.target.closest('[data-sel]');if(b){R.sel=b.dataset.sel;R.lastHot='';drawRadar()}});
 
 /* Start: gespeicherte Welt laden */
 let first='std';try{first=localStorage.getItem('bolt-theme')||'std'}catch(e){}

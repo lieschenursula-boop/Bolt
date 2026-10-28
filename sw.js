@@ -1,6 +1,6 @@
 /* BOLT Steuerung – Service Worker (Offline-Cache)
    Neue Dateien/Icons? Dann CACHE hochzählen (v2 -> v3). */
-const CACHE = 'bolt-v3';
+const CACHE = 'bolt-v4';
 const FILES = ['./', 'index.html', 'themes.js', 'fonts.css', 'manifest.json', 'icon.svg',
                'icon-192.png', 'icon-512.png', 'icon-512-maskable.png',
                'fonts/nunito-latin-wght-normal.woff2', 'fonts/fredoka-latin-wght-normal.woff2',
